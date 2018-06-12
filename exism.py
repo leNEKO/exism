@@ -5,12 +5,8 @@ import sys
 import os
 import shutil
 
-LANG = [
-    "python",
-    "php",
-    "javascript"
-]
 DIR = os.path.dirname(os.path.realpath(__file__))
+LANG = [f.split(".")[0] for f in os.listdir(os.path.realpath(DIR + "/task"))]
 
 
 def create_task(lang: str, path: str):

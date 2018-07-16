@@ -4,16 +4,18 @@ import subprocess as sp
 import sys
 import os
 import shutil
+import getopt
 
 DIR = os.path.dirname(os.path.realpath(__file__))
-LANG = [f.split(".")[0] for f in os.listdir(os.path.realpath(DIR + "/task"))]
+LANG = [f.split(".")[0] for f in os.listdir(
+    os.path.realpath(DIR + "/task"))]  # list available lang
 
 
-def create_task(lang: str, path: str):
+def create_task(track: str, path: str):
     exism = os.path.basename(path)
-    tf_path = f"{DIR}/task/{lang}.jsonc"
-    od_path = f"{path}/.vscode/"
-    of_path = f"{od_path}tasks.json"
+    tf_path = f"{DIR}/task/{track}.jsonc"  # template task file
+    od_path = f"{path}/.vscode/"  # destination dir path
+    of_path = f"{od_path}tasks.json"  # destination task file path
 
     if os.path.isfile(tf_path) and not os.path.isfile(of_path):
         os.makedirs(od_path, exist_ok=True)
@@ -25,18 +27,20 @@ def create_task(lang: str, path: str):
 
 
 def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[2:], '', ["track=", "exercise="])
+        d = dict((x[2:], y) for x, y in opts)
+        print(d)
 
-    command = sys.argv
-    command[0] = "exercism"
-    output: str = sp.check_output(" ".join(command), shell=True,
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
+
+    command = "exercism " + " ".join(sys.argv[1:])
+    output: str = sp.check_output(command, shell=True,
                                   universal_newlines=True).strip()
-    print(output)
 
-    pattern = re.compile(r"(\w+)\s\((.*)\)\s+(.*)")
-    results = pattern.findall(output)
-    for lang, comment, path in results:
-        if lang in LANG:
-            create_task(lang, path)
+    create_task(d["track"], output)
 
 
 if __name__ == '__main__':

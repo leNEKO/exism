@@ -39,8 +39,10 @@ def main():
     command = "exercism " + " ".join(sys.argv[1:])
     output: str = sp.check_output(command, shell=True,
                                   universal_newlines=True).strip()
-
-    create_task(d["track"], output)
+    try:
+        create_task(d["track"], output)
+    except IndexError():
+        print("No task to copy")
 
 
 if __name__ == '__main__':

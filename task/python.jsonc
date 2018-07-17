@@ -6,11 +6,8 @@
         {
             "label": "run",
             "type": "shell",
-            "command": "myclear",
-            "args": [
-                "python3",
-                "###file###.py"
-            ],
+            "command": "clear;",
+            "args": ["python3", "###file###.py"],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -19,10 +16,8 @@
         {
             "label": "pytest",
             "type": "shell",
-            "command": "myclear",
-            "args": [
-                "pytest"
-            ],
+            "command": "clear;",
+            "args": ["pytest"],
             "group": {
                 "kind": "test",
                 "isDefault": true

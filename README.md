@@ -1,5 +1,13 @@
 # exism
 
-fetching new problem create vscode default tasks for building and testing in various languages (Python, PHP, Javascript)
+## an alias for exercism cli
 
-The tasks uses the "myclear" script to clear the vscode terminal at each run.
+-   download exercise
+-   create vscode default tasks for building and testing in various languages (Python, PHP, Javascript, bash)
+-   change to exercise directory
+
+you need to add an alias to .profile
+
+```bash
+exercism='. /path/to/exism.sh exercism'
+```

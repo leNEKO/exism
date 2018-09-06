@@ -2,13 +2,11 @@
 folder=$($@);
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 $DIR/exism.py $folder
-echo $folder;
+echo $folder
 
-function jump(){
-    cd $folder;
-};
-
-jump
+if [[ -d $folder ]] ; then
+    cd $folder
+fi
 
 # need to add an alias :
-# exercism='. /path/to/exism.sh exercism'
+# alias exercism='. /path/to/exism.sh exercism'

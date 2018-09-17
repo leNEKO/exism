@@ -14,22 +14,11 @@ invalid_args = "_ #!?".split()
 
 
 class ExismTest(unittest.TestCase):
-    def test_valid_(self):
-        print(valid_args)
+    def test_valid_args(self):
         self.assertEqual(
             exism.check_args(valid_args),
             (valid_folder, ["-f"])
         )
-
-    # Utility functions
-    def setUp(self):
-        try:
-            self.assertRaisesRegex
-        except AttributeError:
-            self.assertRaisesRegex = self.assertRaisesRegexp
-
-    def assertRaisesWithMessage(self, exception):
-        return self.assertRaisesRegex(exception, r".+")
 
 
 if __name__ == '__main__':

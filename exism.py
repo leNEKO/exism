@@ -44,7 +44,7 @@ def create_task(path, opts):
     os.makedirs(destination_dir, exist_ok=True)
 
     with open(template_file, 'r') as f:
-        output = f.read().replace("###file###", exercise.replace("-", "_"))
+        output = f.read().replace("###file###", exercise)
 
     with open(destination_file, 'w') as f:
         f.write(output)
@@ -53,7 +53,7 @@ def create_task(path, opts):
 
 
 def check_args(args):
-    opts, _ = getopt.getopt(sys.argv[1:], '-f')
+    opts, _ = getopt.getopt(args, '-f')
     path = sys.argv[-1]
 
     if not os.path.isdir(path):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+""" Some automation in addition to the exercism cli """
 # import re
 # import subprocess as sp
 import sys
@@ -13,11 +14,21 @@ LANG = [f.split(".")[0] for f in os.listdir(
 
 
 def create_task(path, opts):
+    """create the vscode task.json file
+
+    Arguments:
+        path {string} -- a valid path to the exercise folder
+        opts {[type]} -- special arguments
+
+    Raises:
+        FileNotFoundError -- a template file for the requested track must exist
+        FileExistsError -- don't overwrite the existing .vscode/task.json file
+    """
 
     solution_path = f"{path}/.solution.json"
 
-    with open(solution_path) as f:
-        data = json.load(f)
+    with open(solution_path) as file:
+        data = json.load(file)
         track = data["track"]
         exercise = data["exercise"]
 
@@ -37,22 +48,34 @@ def create_task(path, opts):
 
     # check if task file not already exist
     if os.path.isfile(destination_dir) and not forced:
-        raise FileNotFoundError(
+        raise FileExistsError(
             "Task file already here : {}".format(destination_file))
 
     # create .vscode dir if not yet here
     os.makedirs(destination_dir, exist_ok=True)
 
-    with open(template_file, 'r') as f:
-        output = f.read().replace("###file###", exercise)
+    with open(template_file, 'r') as file:
+        output = file.read().replace("###file###", exercise)
 
-    with open(destination_file, 'w') as f:
-        f.write(output)
+    with open(destination_file, 'w') as file:
+        file.write(output)
 
     print(f"Copied {destination_file}")
 
 
 def check_args(args):
+    """Load args, validate and return exercise path and options
+
+    Arguments:
+        args {[type]} -- sys.argv slice
+
+    Raises:
+        FileNotFoundError -- error in creation of the exercise folder from the exercism cli
+
+    Returns:
+        tuple -- path, opts
+    """
+
     opts, _ = getopt.getopt(args, '-f')
     path = sys.argv[-1]
 
@@ -63,10 +86,12 @@ def check_args(args):
 
 
 def main():
+    """Main execution, get the sys.argv"""
+
     try:
         create_task(*check_args(sys.argv[1:]))
-    except Exception as e:
-        print(e)
+    except ValueError as error:
+        print(error)
 
 
 if __name__ == '__main__':

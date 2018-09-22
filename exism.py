@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """ Some automation in addition to the exercism cli """
-# import re
-# import subprocess as sp
+
 import sys
 import os
-# import shutil
-import getopt
+import argparse
 import json
 
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -13,7 +11,7 @@ LANG = [f.split(".")[0] for f in os.listdir(
     os.path.realpath(DIR + "/task"))]  # list available lang
 
 
-def create_task(path, opts):
+def create_task(args):
     """create the vscode task.json file
 
     Arguments:
@@ -24,8 +22,7 @@ def create_task(path, opts):
         FileNotFoundError -- a template file for the requested track must exist
         FileExistsError -- don't overwrite the existing .vscode/task.json file
     """
-
-    solution_path = f"{path}/.solution.json"
+    solution_path = f"{args.path}/.solution.json"
 
     with open(solution_path) as file:
         data = json.load(file)
@@ -34,12 +31,9 @@ def create_task(path, opts):
 
     # template task file
     template_file = "{}/task/{}.jsonc".format(DIR, data["track"])
-    destination_dir = f"{path}/.vscode/"  # destination dir path
+    destination_dir = f"{args.path}/.vscode/"  # destination dir path
     # destination task file path
     destination_file = f"{destination_dir}tasks.json"
-
-    # check if forced
-    forced = "-f" in opts
 
     # check if template exist
     if not os.path.isfile(template_file):
@@ -47,7 +41,7 @@ def create_task(path, opts):
             "No template for {} : {}".format(track, template_file))
 
     # check if task file not already exist
-    if os.path.isfile(destination_dir) and not forced:
+    if os.path.isfile(destination_dir) and not args.force:
         raise FileExistsError(
             "Task file already here : {}".format(destination_file))
 
@@ -63,11 +57,8 @@ def create_task(path, opts):
     print(f"Copied {destination_file}")
 
 
-def check_args(args):
-    """Load args, validate and return exercise path and options
-
-    Arguments:
-        args {[type]} -- sys.argv slice
+def check_args(argv):
+    """validate args and return exercise path and options
 
     Raises:
         FileNotFoundError -- error in creation of the exercise folder from the exercism cli
@@ -76,20 +67,20 @@ def check_args(args):
         tuple -- path, opts
     """
 
-    opts, _ = getopt.getopt(args, '-f')
-    path = sys.argv[-1]
-
-    if not os.path.isdir(path):
-        raise FileNotFoundError()
-
-    return (path, [] if not opts else [t for t in opts[0]])
+    # argument parser
+    parser = argparse.ArgumentParser(description="Some exercism automation")
+    parser.add_argument(
+        'path', help="path to the folder containing the solutions.json file")
+    parser.add_argument(
+        "-f", "--force", help="force rewriting of .vscode/task.json file", action="store_true")
+    return parser.parse_args(args=argv)
 
 
 def main():
-    """Main execution, get the sys.argv"""
+    """Main execution"""
 
     try:
-        create_task(*check_args(sys.argv[1:]))
+        create_task(check_args(sys.argv[1:]))
     except ValueError as error:
         print(error)
 

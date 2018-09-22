@@ -1,25 +1,21 @@
-import unittest
+""" Test exism """
 
-import exism
 import os
+import exism
 
 DIR = os.path.dirname(os.path.realpath(__file__))
+
+# dummy folder
 DUMMY_PATH = f"{DIR}/dummy"
-
-valid_folder = f"{DUMMY_PATH}/valid_folder"
-invalid_folder = f"{DUMMY_PATH}/invalid_folder"
-
-valid_args = f"_ {valid_folder} -f".split()
-invalid_args = "_ #!?".split()
-
-
-class ExismTest(unittest.TestCase):
-    def test_valid_args(self):
-        self.assertEqual(
-            exism.check_args(valid_args),
-            (valid_folder, ["-f"])
-        )
+VALID_FOLDER = f"{DUMMY_PATH}/valid_folder"
+INVALID_FOLDER = f"{DUMMY_PATH}/invalid_folder"
+# dummy args
+VALID_ARGS = f"_  -f {VALID_FOLDER}".split()
+INVALID_ARGS = f"_  -ne {INVALID_FOLDER}".split()
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_valid_args():
+    """ test the arguments """
+
+    assert exism.check_args(VALID_ARGS) == Namespace(
+        force=False, path=f"{VALID_FOLDER}")

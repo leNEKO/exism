@@ -6,6 +6,9 @@ import os
 import argparse
 import json
 
+# no traceback
+sys.tracebacklimit = 0
+
 DIR = os.path.dirname(os.path.realpath(__file__))
 LANG = [f.split(".")[0] for f in os.listdir(
     os.path.realpath(DIR + "/task"))]  # list available lang
@@ -22,7 +25,7 @@ def create_task(args):
         FileNotFoundError -- a template file for the requested track must exist
         FileExistsError -- don't overwrite the existing .vscode/task.json file
     """
-    solution_path = f"{args.path}/.solution.json"
+    solution_path = f"{args.path}/.exercism/metadata.json"
 
     with open(solution_path) as file:
         data = json.load(file)
@@ -41,7 +44,7 @@ def create_task(args):
             "No template for {} : {}".format(track, template_file))
 
     # check if task file not already exist
-    if os.path.isfile(destination_dir) and not args.force:
+    if os.path.isfile(destination_file) and not args.force:
         raise FileExistsError(
             "Task file already here : {}".format(destination_file))
 
